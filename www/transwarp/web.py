@@ -354,7 +354,7 @@ class Request(object):
             hdrs = {}
             for k, v in self._environ.iteritems():
                 if k.startswith('HTTP_'):
-                    kdrs[k[5:].replace('_', '-').upper()] = v.decode('utf-8')
+                    hdrs[k[5:].replace('_', '-').upper()] = v.decode('utf-8')
             self._headers = hdrs
         return self._headers
 
@@ -375,7 +375,7 @@ class Request(object):
                 for c in cookie_str.split(';'):
                     pos = c.find('=')
                     if pos > 0:
-                        cookies[c[:pos].strip()] = utisl.unquote(c[pos+1:])
+                        cookies[c[:pos].strip()] = urllib.unquote(c[pos+1:])
             self._cookies = cookie
         return self._cookies
 
