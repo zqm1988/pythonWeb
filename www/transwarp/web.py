@@ -209,6 +209,7 @@ class _RedirectError(_HttpError):
 	RedirectError that defines http redirect code.
 	"""
 	def __init__(self, code, location):
+		# type: (object, object) -> object
 		super(_RedirectError, self).__init__(code)
 		self.location = location
 
@@ -277,11 +278,11 @@ class Request(object):
             if item.filename:
                     return MultipartFile(item)
             return utils.to_unicode(item.value)
-    fs = cgi.FieldStorage(fp=self._environ['wsgi.input'], environ=self._environ, keep_blank_values=True)
-    inputs = dict()
-    for key in fs:
-        inputs[key] = _convert(fs[key])
-    return inputs
+        fs = cgi.FieldStorage(fp=self._environ['wsgi.input'], environ=self._environ, keep_blank_values=True)
+        inputs = dict()
+        for key in fs:
+            inputs[key] = _convert(fs[key])
+        return inputs
 
     def _get_raw_input(self):
         if not hasattr(self, '_raw_input'):
