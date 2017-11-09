@@ -11,14 +11,14 @@ import types, os, re, cgi, sys, time, datetime, functools, mimetypes, threading,
 
 from db import Dict
 
-# import utils
+import utils
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
 
-ctx = theading.local()
+ctx = threading.local()
 
 # re_expression of response headers, use to check resposne?
 _RE_RESPONSE_STATUS = re.compile(r'^\d\d\d(\ [\w\ ]+)?$')
@@ -136,6 +136,30 @@ _RESPONSE_HEADERS = (
 
 
 class UTC(datetime.tzinfo):
+    """
+    >>> tz0 = UTC('+00:00')
+    >>> tz0.tzname(None)
+    'UTC+00:00'
+    >>> tz8 = UTC('+8:00')
+    >>> tz8.tzname(None)
+    'UTC+8:00'
+    >>> tz7 = UTC('+7:30')
+    >>> tz7.tzname(None)
+    'UTC+7:30'
+    >>> tz5 = UTC('-5:30')
+    >>> tz5.tzname(None)
+    'UTC-5:30'
+    >>> from datetime import datetime
+    >>> u = datetime.utcnow().replace(tzinfo=tz0)
+    >>> l1 = u.astimezone(tz8)
+    >>> l2 = u.replace(tzinfo=tz8)
+    >>> d1 = u - l1
+    >>> d2 = u - l2
+    >>> d1.seconds
+    0
+    >>> d2.seconds
+    28800
+    """
     def __init__(self, utc):
         utc = str(utc.strip().upper())
         mt = _RE_TZ.match(utc)
@@ -151,9 +175,6 @@ class UTC(datetime.tzinfo):
             raise ValueError('bad utc time zone')
 
     def utcoffset(self, dt):
-		'''
-        offset with standard timezone
-        '''
         return self._utcoffset
 
     def dst(self, dt):
@@ -180,6 +201,9 @@ UTC_0 = UTC('+00:00')
 class _HttpError(Exception):
     '''
     Httperror that defines http error code
+    >>> e = _HttpError(404)
+    >>> e.status
+    '404 Not Found'
     '''
 
     def __init__(self, code):
@@ -205,34 +229,42 @@ class _HttpError(Exception):
 
 
 class _RedirectError(_HttpError):
-	"""
-	RedirectError that defines http redirect code.
-	"""
-	def __init__(self, code, location):
-		# type: (object, object) -> object
-		super(_RedirectError, self).__init__(code)
-		self.location = location
+    """
+    RedirectError that defines http redirect code.
+    >>> e = _RedirectError(302, 'http://www.apple.com/')
+    >>> e.status
+    '302 Found'
+    >>> e.location
+    'http://www.apple.com/'
+    """
+    def __init__(self, code, location):
+	# type: (object, object) -> object
+	super(_RedirectError, self).__init__(code)
+	self.location = location
 
-	def __str__(self):
-		return '%s, %s' % (self.status, self.location)
+    def __str__(self):
+	return '%s, %s' % (self.status, self.location)
 
-	__repr__ = __str__
+    __repr__ = __str__
 
 class HttpError(Exception):
-	"""
-	HTTP Exceptions
-	"""
     @staticmethod
-	def badrequest():
-		return _HttpError(400)
+    def badrequest():
+        """
+        >>> raise HttpError.badrequest()
+        Traceback (most recent call last):
+            ...
+        _HttpError: 400 Bad Request
+        """
+	return _HttpError(400)
 
-	@staticmethod
-	def unauthorized():
-		return _HttpError(401)
+    @staticmethod
+    def unauthorized():
+	return _HttpError(401)
 
-	@staticmethod
-	def forbidden():
-		return _HttpError(403)
+    @staticmethod
+    def forbidden():
+	return _HttpError(403)
 
     @staticmethod
     def notfound():
@@ -269,9 +301,9 @@ class Request(object):
         self._environ = environ
 
     def _parse_input(self):
-    """
-    pase parmeter from wsgi into a dict object
-    """
+        """
+        pase parmeter from wsgi into a dict object
+        """
         def _convert(item):
             if isinstance(item, list):
                 return [utils.to_unicode(i.value) for i in item]
@@ -290,7 +322,32 @@ class Request(object):
         return self._raw_input
 
     def __getitem__(self, key):
-        r = self._get._raw_input()[key]
+        """
+        >>> from StringIO import StringIO
+        >>> r = Request({'REQUEST_METHOD':'POST', 'wsgi.input':StringIO('a=1&b=M%0M&c=ABC&e=')})
+        >>> r['a']
+        u'1'
+        >>> r['c']
+        u'ABC'
+        >>> r['empty']
+        Traceback (most recent call last):
+            ...
+        KeyError: 'empty'
+        >>> b = '----WebKitFormBoundaryQQ3J8k'
+        >>> pl = ['--%s' % b, 'Content-Disposition: form-data; name=\\"name\\"n', 'Scofield', '--%s' % b, 'Content-Disposition: form-data; name=\\"file\\";filename=\\"test.txt\\"', 'Content-Type: text/plain\\n', 'just a test', '--%s' % b, 'Content-Disposition: form-data;name=\\"id\\"\\n', '4008009001', '--%s--' % b, '']
+        >>> payload = '\\n'.join(pl)
+        >>> r = Request({'REQUEST_METHOD':'POST', 'CONTENT_LENGTH':str(len(payload)), 'CONTENT_TYPE':'multipart/form-data; boundary=%s'%b,'wsgi.input':StringIO(payload)})
+        >>> r.get('name')
+        u'Scofield'
+        >>> r.gets('name')
+        [u'Scofield', u'Lincoln']
+        >>> f = r.get('file')
+        >>> f.filename
+        u'test.txt'
+        >>> f.file.read()
+        'just a test'
+        """
+        r = self._get_raw_input()[key]
         if isinstance(r, list):
             return r[0]
         return r
@@ -380,7 +437,7 @@ class Request(object):
         return self._cookies
 
     # return Cookie value
-    @proerty
+    @property
     def cookie(self):
         return Dict(**self._get_cookies())
 
@@ -418,9 +475,19 @@ def post(path):
 def view(path):
     pass
 
-
 def interceptor(pattern):
     pass
+
+class Route(object):
+    pass
+
+class StaticFielRoute(object):
+    pass
+
+class MultipartFile(object):
+    def __init__(self, storage):
+        self.filename = utils.to_unicode(storage.filename)
+        self.file = storage.file
 
 
 class TemplateEngine(object):
@@ -435,3 +502,8 @@ class Jinja2TemplateEngine(TemplateEngine):
 
     def __call__(self, path, model):
         return self._env.get_template(path).render(**model).encode('utf-8')
+
+if __name__ == '__main__':
+    sys.path.append('.')
+    import doctest
+    doctest.testmod()
