@@ -294,6 +294,9 @@ class Model(dict):
 		db.insert('%s' % self.__table__, **params)
 		return self
 
+        def to_str(self):
+                return self.__str__
+
 if __name__ == '__main__':
 	logging.basicConfig(level=logging.DEBUG)
 	db.create_engine('www-data', 'www-data', 'test', '127.0.0.1')
