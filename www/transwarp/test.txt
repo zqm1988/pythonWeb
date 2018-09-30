@@ -1,0 +1,220 @@
+**********************************************************************
+File "web.py", line 342, in __main__.Request.__getitem__
+Failed example:
+    r.gets('name')
+Expected:
+    [u'Scofield', u'Lincoln']
+Got:
+    [u'Scofield']
+**********************************************************************
+File "web.py", line 588, in __main__.Response.headers
+Failed example:
+    r.headers
+Expected:
+    [('Content-Type', 'text/html; charset=utf-8'), ('X-Powered-By', 'transwarp/1.0')]
+Got:
+    <bound method Response.headers of <__main__.Response object at 0x105d4a950>>
+**********************************************************************
+File "web.py", line 590, in __main__.Response.headers
+Failed example:
+    r.set_cookie('s1', 'ok', 36000)
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.headers[2]>", line 1, in <module>
+        r.set_cookie('s1', 'ok', 36000)
+      File "web.py", line 670, in set_cookie
+        if domain:
+    NameError: global name 'domain' is not defined
+**********************************************************************
+File "web.py", line 591, in __main__.Response.headers
+Failed example:
+    r.headers
+Expected:
+    [('Content-Type', 'text/html; charset=utf-8'), ('Set-Cookie', 's1=ok; Max-Age=3600; Path=/; HttpOnly'), ('X-Powered-By', 'transwarp/1.0')]
+Got:
+    <bound method Response.headers of <__main__.Response object at 0x105d4a950>>
+**********************************************************************
+File "web.py", line 648, in __main__.Response.set_cookie
+Failed example:
+    r.set_cookie('company', 'Abc, Inc.', max_age = 3600)
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.set_cookie[1]>", line 1, in <module>
+        r.set_cookie('company', 'Abc, Inc.', max_age = 3600)
+      File "web.py", line 670, in set_cookie
+        if domain:
+    NameError: global name 'domain' is not defined
+**********************************************************************
+File "web.py", line 649, in __main__.Response.set_cookie
+Failed example:
+    r._cookies
+Expected:
+    {'company': 'company=Abc%2C%20Inc.; Max-Age=3600; Path=/; HttpOnly'}
+Got:
+    {}
+**********************************************************************
+File "web.py", line 651, in __main__.Response.set_cookie
+Failed example:
+    r.set_sookie('company', r'Example="Limited"', expires=1342274794.123, path='/sub/')
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.set_cookie[3]>", line 1, in <module>
+        r.set_sookie('company', r'Example="Limited"', expires=1342274794.123, path='/sub/')
+    AttributeError: 'Response' object has no attribute 'set_sookie'
+**********************************************************************
+File "web.py", line 652, in __main__.Response.set_cookie
+Failed example:
+    r._cookies
+Expected:
+    {'company': 'company=Example%3D%22Limited%22; Expires=Sat, 14-Jul-2012 14:06:34 GMT; Path=/sub/; HttpOnly'}
+Got:
+    {}
+**********************************************************************
+File "web.py", line 655, in __main__.Response.set_cookie
+Failed example:
+    r.set_cookie('company', 'Expires', expires=dt)
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.set_cookie[6]>", line 1, in <module>
+        r.set_cookie('company', 'Expires', expires=dt)
+      File "web.py", line 665, in set_cookie
+        if isinstance(expires, (datatime.date, datetime.datetime)):
+    NameError: global name 'datatime' is not defined
+**********************************************************************
+File "web.py", line 656, in __main__.Response.set_cookie
+Failed example:
+    r._cookies
+Expected:
+    {'company': 'company=Expires; Expires=Sat, 14-Jul-2012 14:06:34 GMT; Path=/; HttpOnly'}
+Got:
+    {}
+**********************************************************************
+File "web.py", line 558, in __main__.Response.set_header
+Failed example:
+    r.header('conent-type')
+Expected:
+    'text/html; charset=utf-8'
+Got nothing
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status
+Failed example:
+    r.status = 404
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.status[2]>", line 1, in <module>
+        r.status = 404
+      File "web.py", line 738, in status
+        if instance(value, (int, long)):
+    NameError: global name 'instance' is not defined
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status
+Failed example:
+    r.status
+Expected:
+    '404 Not Found'
+Got:
+    '200 OK'
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status
+Failed example:
+    r.status = '500 Oh My God'
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.status[4]>", line 1, in <module>
+        r.status = '500 Oh My God'
+      File "web.py", line 738, in status
+        if instance(value, (int, long)):
+    NameError: global name 'instance' is not defined
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status
+Failed example:
+    r.status
+Expected:
+    '500 Oh My God'
+Got:
+    '200 OK'
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status_code
+Failed example:
+    r.status = 404
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.status_code[2]>", line 1, in <module>
+        r.status = 404
+      File "web.py", line 738, in status
+        if instance(value, (int, long)):
+    NameError: global name 'instance' is not defined
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status_code
+Failed example:
+    r.status_code
+Expected:
+    404
+Got:
+    200
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status_code
+Failed example:
+    r.status = '500 Internal Error'
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.status_code[4]>", line 1, in <module>
+        r.status = '500 Internal Error'
+      File "web.py", line 738, in status
+        if instance(value, (int, long)):
+    NameError: global name 'instance' is not defined
+**********************************************************************
+File "web.py", line ?, in __main__.Response.status_code
+Failed example:
+    r.status_code
+Expected:
+    500
+Got:
+    200
+**********************************************************************
+File "web.py", line 681, in __main__.Response.unset_cookie
+Failed example:
+    r.set_cookie('company', 'Abc, Inc.', max_age=3600)
+Exception raised:
+    Traceback (most recent call last):
+      File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/doctest.py", line 1315, in __run
+        compileflags, 1) in test.globs
+      File "<doctest __main__.Response.unset_cookie[1]>", line 1, in <module>
+        r.set_cookie('company', 'Abc, Inc.', max_age=3600)
+      File "web.py", line 670, in set_cookie
+        if domain:
+    NameError: global name 'domain' is not defined
+**********************************************************************
+File "web.py", line 682, in __main__.Response.unset_cookie
+Failed example:
+    r._cookies
+Expected:
+    {'company': 'company=Abc%2C%20Inc.; Max-Age=3600; Path=/; HttpOnly'}
+Got:
+    {}
+**********************************************************************
+7 items had failures:
+   1 of  14 in __main__.Request.__getitem__
+   3 of   4 in __main__.Response.headers
+   6 of   8 in __main__.Response.set_cookie
+   1 of   4 in __main__.Response.set_header
+   4 of   6 in __main__.Response.status
+   4 of   6 in __main__.Response.status_code
+   2 of   5 in __main__.Response.unset_cookie
+***Test Failed*** 21 failures.
