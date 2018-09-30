@@ -5,43 +5,86 @@
 {% block beforehead %}
 
 <script>
-    function check_form() {
-        $('#password').val(CryptoJS.MD5($('#password1').val()).toString());
-        return true
+
+    function validateEmail(email){
+        var re = /^[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
+        return re.test(email.toLowerCase());
     }
+
+    $(function (){
+        var vm = new Vue({
+            el: '#form-register',
+            data: {
+                name: '',
+                email: '',
+                password1: '',
+                password2: ''
+            },
+            methods: {
+                submit: function (event){
+                    event.preventDefault();
+                    if(! this.name.trim()){
+                        return showError('please input name');
+                    }
+                    if(! validateEmail(this.email.trim().toLowerCase())){
+                        return showError('please input valid email address');
+                    }
+                    if(this.password1.length < 6){
+                        return showError('password should has at least 6 digits.');
+                    }
+                    if(this.password1 !== this.password2){
+                        return showError('password not the same')
+                    }
+                    startLoading();
+                    postApi('/api/users',{
+                        name: this.name,
+                        email: this.email.trim().toLowerCase(),
+                        password: CryptoJS.MD5(this.password1).toString(),
+                    }, function (err, r){
+                        if (err){
+                            alert(err);
+                            showError(err);
+                        }else{
+                            return location.assign('/');
+                        }
+                        stopLoading();
+                    });
+               }
+            }
+        });
+    });
 </script>
 
 {% endblock %}
 
-{% block content $}
+{% block content %}
 
 <div class="uk-width-2-3">
     <h1>welcome</h1>
-    <form id="form-register" class="uk-form uk-form-stacked" onsubmit="return check_form()">
+    <form id="form-register" v-on="submit: submit" class="uk-form uk-form-stacked">
         <div class="uk-alert uk-alert-danger uk-hidden"></div>
         <div class="uk-form-row">
             <label class="uk-form-label">name:</label>
             <div class="uk-form-controls">
-                <input name="name" type="text" class="uk-width-1-1">
+                <input v-model="name" type="text" placeholder="name" class="uk-width-1-1">
             </div>
         </div>
         <div class="uk-form-row">
             <label class="uk-form-label">email:</label>
             <div class="uk-form-controls">
-                <input name="email" type="text" class="uk-width-1-1">
+                <input v-model="email" type="text" placeholder="email" class="uk-width-1-1">
             </div>
         </div>
         <div class="uk-form-row">
             <label class="uk-form-label">password:</label>
             <div class="uk-form-controls">
-                <input id="password1" type="password" class="uk-width-1-1">
-                <input id="password" name="password" type="hidden">
+                <input v-model="password1" type="password" placeholder="password" class="uk-width-1-1">
             </div>
         </div>
         <div class="uk-form-row">
             <label class="uk-form-label">confirm password:</label>
             <div class="uk-form-controls">
-                <input name="password2" type="password" maxlength="50" class="uk-width-1-1">
+                <input v-model="password2" type="password" placeholder="confirm password" maxlength="50" class="uk-width-1-1">
             </div>
         </div>
         <div class="uk-form-row">
